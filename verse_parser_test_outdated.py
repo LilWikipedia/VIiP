@@ -3,7 +3,7 @@ import unittest
 
 from ddt import ddt, data, unpack
 from parsedNode import ParsedNode
-from token import Token
+from tokens import Token
 from tokenTypes import TokenTypes
 from nodes import *
 from verse_lexer import lexicon

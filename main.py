@@ -17,16 +17,12 @@ class VerseInterpreterApp(App):
 
         # Create the label with the provided text
         intro_text = """
-
-* Verse Interpreter w/GUI * v1.0
-
-A Verse programming sandbox independent of UEFN!
-
-Frontend & GUI by Cruz Wootten aka Lil Wikipedia
-Backend by Kariyampalli Christy & Turobin-Ort Marcel
-The interpreter was released under MIT license
-
-"""
+        * Verse Interpreter w/GUI * v1.0
+        A Verse programming sandbox independent of UEFN!
+        Frontend & GUI by Cruz Wootten aka Lil Wikipedia
+        Backend by Kariyampalli Christy & Turobin-Ort Marcel
+        The interpreter was released under MIT license
+        """
         self.intro_label = Label(text=intro_text, halign='center', valign='middle')
         self.intro_label.bind(size=self.intro_label.setter('text_size'))  # Ensures the text wraps within the label
         self.root.add_widget(self.intro_label)
@@ -45,14 +41,16 @@ The interpreter was released under MIT license
         return self.root
 
     def on_button_press(self, instance):
-        # Here you should call the function from your repository and update the output label
-        input_text = self.input.text
-        lexer = lexicon(input_text)
-        parser = Parser(lexer)
-        interpreter = Interpreter(parser)
-        result = interpreter.interpret()
-        self.output.text=(repr(result))
-
+        try:
+            # Here you should call the function from your repository and update the output label
+            input_text = self.input.text
+            lexer = lexicon(input_text)
+            parser = Parser(lexer)
+            interpreter = Interpreter(parser)
+            result = interpreter.interpret()
+            self.output.text = repr(result)
+        except Exception as e:
+            self.output.text = f"Error: {str(e)}"
 
 if __name__ == '__main__':
     VerseInterpreterApp().run()
