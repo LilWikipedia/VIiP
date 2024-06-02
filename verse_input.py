@@ -7,7 +7,8 @@ import start_text
 
 sys.setrecursionlimit(1000000)
 
-text = 'INPUT VERSE CODE HERE'
+text = 'z:int; z=7; y:=(31|5); x:=(7|22); (z,x,y)'
+
 
 start_text
 lexer = lexicon(text)
