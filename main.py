@@ -8,6 +8,7 @@ import sys
 from verse_lexer import lexicon
 from verse_parser import Parser
 from verse_interpreter import Interpreter
+import pickle
 
 import start_text
 import nodes
@@ -42,11 +43,15 @@ class VerseInterpreterApp(App):
         self.root.add_widget(self.button)
 
         return self.root
-
+    data = {TextInput}
+    with open('data.pickle', 'wb') as file:
+        pickle.dump(data, file)
     def on_button_press(self, instance):
         try:
             # Here you should call the function from your repository and update the output label
             input_text = self.input.text
+            with open('data.pickle', 'rb') as file:
+                loaded_data = pickle.load(file)
             lexer = lexicon(input_text)
             parser = Parser(lexer)
             interpreter = Interpreter(parser)
