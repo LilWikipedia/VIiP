@@ -1,5 +1,5 @@
 import copy
-from tokenTypes import TokenTypes
+from modules.tokenTypes import TokenTypes
 
 '''
 Creates a/or many possible sequences.

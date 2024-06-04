@@ -1,10 +1,9 @@
 from random import randrange
-from symboltable import SymbolTable
+from modules.symboltable import SymbolTable
 
 
 class IdentifierCreator:
-
-      
+  
     def create(symboltable:SymbolTable):
         return IdentifierCreator.get(symboltable,"")
     
@@ -16,5 +15,4 @@ class IdentifierCreator:
 
             if(symboltable.check_if_exists(newIdentifier) == False):
                 return newIdentifier
-         
         return IdentifierCreator.get(symboltable,startingChar + "var")

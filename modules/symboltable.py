@@ -1,8 +1,8 @@
 import string
 
-from tokenTypes import TokenTypes
-from valueTypes import ValueTypes
-from logger import Console_Logger
+from modules.tokenTypes import TokenTypes
+from modules.valueTypes import ValueTypes
+from modules.logger import Console_Logger
 
 class Symbol:
     def __init__(self, symbol: string, value, symbolType: TokenTypes) -> None:

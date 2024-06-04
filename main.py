@@ -3,15 +3,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from nodes import *
+from modules.nodes import *
 import sys
-from verse_lexer import lexicon
-from verse_parser import Parser
-from verse_interpreter import Interpreter
-import pickle
+from modules.verse_lexer import lexicon
+from modules.verse_parser import Parser
+from modules.verse_interpreter import Interpreter
 
-import start_text
-import nodes
+
+
 
 class VerseInterpreterApp(App):
     def build(self):
@@ -43,20 +42,17 @@ class VerseInterpreterApp(App):
         self.root.add_widget(self.button)
 
         return self.root
-    data = {TextInput}
-    with open('data.pickle', 'wb') as file:
-        pickle.dump(data, file)
+
     def on_button_press(self, instance):
         try:
             # Here you should call the function from your repository and update the output label
             input_text = self.input.text
-            with open('data.pickle', 'rb') as file:
-                loaded_data = pickle.load(file)
+
             lexer = lexicon(input_text)
             parser = Parser(lexer)
             interpreter = Interpreter(parser)
-            lexer.input = input_text
-            interpreter.reset()
+            #lexer.input = input_text
+            #interpreter.reset()
             result = interpreter.interpret()
             self.output.text = repr(result)
             print(repr(result))
