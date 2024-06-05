@@ -6,6 +6,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from nodes import *
 import sys
+import string
+from logger import Console_Logger
 from verse_lexer import lexicon
 from verse_parser import Parser
 from verse_interpreter import Interpreter
@@ -16,9 +18,11 @@ import start_text
 
 class VerseInterpreterApp(App):
     def build(self):
+        
         self.title = '* Verse Interpreter w/GUI * v1.0'
         self.icon = 'viip.png'
         self.root = BoxLayout(orientation='vertical')
+        self.logger = Console_Logger()
 
         # Create the label with the provided text
         intro_text = """
@@ -49,8 +53,11 @@ class VerseInterpreterApp(App):
         try:
             # Here you should call the function from your repository and update the output label
             input_text = self.input.text
-            result = verse_input(input_text)
+            
+            result = verse_userinput(input_text)
             self.output.text = result
+            
+            
 
             # lexer = lexicon(input_text)
             # parser = Parser(lexer)
@@ -62,7 +69,8 @@ class VerseInterpreterApp(App):
             # print(repr(result))
         except Exception as e:
             self.output.text = f"Error: {str(e)}"
-def verse_input(text):
+            
+def verse_userinput(text):
     sys.setrecursionlimit(1000000)
     userverse = text
 
@@ -71,6 +79,7 @@ def verse_input(text):
     interpreter = Interpreter(parser)
     result = interpreter.interpret()
     return repr(result)
+
 
 if __name__ == '__main__':
     VerseInterpreterApp().run()
