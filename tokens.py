@@ -1,4 +1,4 @@
-from modules.tokenTypes import TokenTypes
+from tokenTypes import TokenTypes
 
 class Token:
     def __init__(self, type: TokenTypes, value) -> None:

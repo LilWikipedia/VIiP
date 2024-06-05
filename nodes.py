@@ -1,11 +1,11 @@
 import copy
 import sys
-from modules.valueTypes import ValueTypes
-from modules.tokens import Token
-from modules.tokenTypes import TokenTypes
-from modules.symboltable import SymbolTable
-from modules.sequentor import Sequentor
-from modules.identifier_creator import IdentifierCreator
+from valueTypes import ValueTypes
+from tokens import Token
+from tokenTypes import TokenTypes
+from symboltable import SymbolTable
+from sequentor import Sequentor
+from identifier_creator import IdentifierCreator
 
 
 

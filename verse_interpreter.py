@@ -1,7 +1,7 @@
-from modules.verse_parser import Parser
-from modules.symboltable import SymbolTable
-from modules.nodes import *
-from modules.logger import *
+from verse_parser import Parser
+from symboltable import SymbolTable
+from nodes import *
+from logger import *
 
 class Interpreter:
     def __init__(self, parser: Parser):

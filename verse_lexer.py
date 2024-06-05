@@ -1,6 +1,6 @@
 import string
-from modules.tokens import Token
-from modules.tokenTypes import TokenTypes
+from tokens import Token
+from tokenTypes import TokenTypes
 
 
 class lexicon:
