@@ -1,13 +1,15 @@
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from modules.nodes import *
+from nodes import *
 import sys
-from modules.verse_lexer import lexicon
-from modules.verse_parser import Parser
-from modules.verse_interpreter import Interpreter
+from verse_lexer import lexicon
+from verse_parser import Parser
+from verse_interpreter import Interpreter
+import start_text
 
 
 
@@ -47,17 +49,28 @@ class VerseInterpreterApp(App):
         try:
             # Here you should call the function from your repository and update the output label
             input_text = self.input.text
+            result = verse_input(input_text)
+            self.output.text = result
 
-            lexer = lexicon(input_text)
-            parser = Parser(lexer)
-            interpreter = Interpreter(parser)
+            # lexer = lexicon(input_text)
+            # parser = Parser(lexer)
+            # interpreter = Interpreter(parser)
             #lexer.input = input_text
             #interpreter.reset()
-            result = interpreter.interpret()
-            self.output.text = repr(result)
-            print(repr(result))
+            # result = interpreter.interpret()
+            # self.output.text = repr(result)
+            # print(repr(result))
         except Exception as e:
             self.output.text = f"Error: {str(e)}"
+def verse_input(text):
+    sys.setrecursionlimit(1000000)
+    userverse = text
+
+    lexer = lexicon(userverse)
+    parser = Parser(lexer)
+    interpreter = Interpreter(parser)
+    result = interpreter.interpret()
+    return repr(result)
 
 if __name__ == '__main__':
     VerseInterpreterApp().run()
