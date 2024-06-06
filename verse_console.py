@@ -1,4 +1,4 @@
-from nodes import *
+from nnodes import *
 from verse_lexer import lexicon
 from verse_parser import Parser
 from verse_interpreter import Interpreter

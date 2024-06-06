@@ -1,6 +1,6 @@
 from verse_parser import Parser
 from symboltable import SymbolTable
-from nodes import *
+from nnodes import *
 from logger import *
 
 class Interpreter:

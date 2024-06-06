@@ -4,7 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from nodes import *
+from nnodes import *
 import sys
 import string
 from logger import Console_Logger
@@ -12,6 +12,7 @@ from verse_lexer import lexicon
 from verse_parser import Parser
 from verse_interpreter import Interpreter
 import start_text
+import pickle
 
 
 
@@ -54,8 +55,11 @@ class VerseInterpreterApp(App):
             # Here you should call the function from your repository and update the output label
             input_text = self.input.text
             
-            result = verse_userinput(input_text)
-            self.output.text = result
+            lexer = lexicon(input_text)
+            parser = Parser(lexer)
+            interpreter = Interpreter(parser)
+            result = interpreter.interpret(self)
+            self.output.text = repr(result)
             
             
 
@@ -70,15 +74,21 @@ class VerseInterpreterApp(App):
         except Exception as e:
             self.output.text = f"Error: {str(e)}"
             
-def verse_userinput(text):
-    sys.setrecursionlimit(1000000)
-    userverse = text
 
-    lexer = lexicon(userverse)
-    parser = Parser(lexer)
-    interpreter = Interpreter(parser)
-    result = interpreter.interpret()
-    return repr(result)
+
+
+
+
+
+def verse_userinput(text):
+        sys.setrecursionlimit(1000000)
+        userverse = text
+
+        lexer = lexicon(userverse)
+        parser = Parser(lexer)
+        interpreter = Interpreter(parser)
+        result = interpreter.interpret()
+        return repr(result)
 
 
 if __name__ == '__main__':

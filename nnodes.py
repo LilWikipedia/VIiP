@@ -8,13 +8,11 @@ from sequentor import Sequentor
 from identifier_creator import IdentifierCreator
 
 
-
-
 class ContextValues():
-    def __init__(self, nodes, needsContext, alreadyInContext) -> None:
-        self.nodes = nodes
-        self.needContext = needsContext
-        self.alreadyInContext = alreadyInContext
+     def __init__(self, nodes, needsContext, alreadyInContext) -> None:
+         self.nodes = nodes
+         self.needContext = needsContext
+         self.alreadyInContext = alreadyInContext
 
 '''
 Top class of all nodes.
@@ -74,6 +72,8 @@ class BlockNode(BaseNode):
             result = n.visit(symboltable)
             if result != None:
                 results.append(result)
+      
+
         i = 0
         hasFailed = False
         while i < 2:
@@ -107,7 +107,7 @@ class BlockNode(BaseNode):
     def getChildNodes(self):
         childNodes = []
         for n in self.nodes:
-            childNodes.extend(n.getChildNodes())
+           childNodes.extend(n.getChildNodes())
         return childNodes
     
     def App_Beta(self,identifierFrom, identifierTo):
@@ -268,6 +268,7 @@ class OperatorNode(BaseNode):
         node_left = self.leftNode.visit(symboltable).visit(symboltable)
         if node_left.token.type in fail_conditions:
                 return FailNode(Token(TokenTypes.FAIL,TokenTypes.FAIL.value)) 
+       
         node_right = self.rightNode.visit(symboltable).visit(symboltable)
         if node_right.token.type in fail_conditions:
                 return FailNode(Token(TokenTypes.FAIL,TokenTypes.FAIL.value))            
@@ -296,6 +297,7 @@ class OperatorNode(BaseNode):
             # Checks if left_val or right_val (nodes) are valid for the operation.
             if (left_val.token.type in fail_conditions) or (right_val.token.type in fail_conditions):
                 nodes.append( FailNode(Token(TokenTypes.FAIL,TokenTypes.FAIL.value)) )
+           
             # Else save vale of done operation of left_val and right_val (nodes) into the nodes list.
             else: 
                 if left_val.token.type == TokenTypes.STRING or right_val.token.type == TokenTypes.STRING:
@@ -430,7 +432,7 @@ class UnaryNode(BaseNode):
         if self.token.type == TokenTypes.MINUS:
             mul = -1
         res = OperatorNode(Token(TokenTypes.MULTIPLY, TokenTypes.MULTIPLY.value),
-                                                NumberNode(Token(TokenTypes.INTEGER,mul)),self.node)
+                                                 NumberNode(Token(TokenTypes.INTEGER,mul)),self.node)
         result = res.visit(symboltable)
         self.type = result.type
         return result
@@ -456,6 +458,7 @@ class UnaryNode(BaseNode):
                         contexts.append(context)
             return ContextValues(contexts,True, True) 
         return ContextValues([currentContext],False, False)
+             
 
 '''
 Node for identifiers.
@@ -536,7 +539,7 @@ class ScopeNode(BaseNode):
     def App_Beta(self,identifierFrom, identifierTo):
         for n in self.nodes:
             n.App_Beta(identifierFrom, identifierTo)
-
+     
 
 '''
 Top class node for types (int, tuple, etc.).
@@ -624,6 +627,8 @@ class FuncCallNode:
                     param.App_Beta(id, newId)
                     func_dec.body.App_Beta(id, newId)
                     table.addScope(newId,param.type)
+             
+
             while(index < len(params) and index < len(self.args)):
                 param = params[index]
                 id = param.nodes[0].token.value
@@ -680,6 +685,7 @@ class FuncCallNode:
                     if arg.token.type == TokenTypes.IDENTIFIER:
                         arg = arg.token.value       
                         isId = True     
+  
                 finally:  
                     if(isId):
                         id = params[index].nodes[0].token.value
@@ -852,8 +858,8 @@ class DataDeclNode:
         if(len(self.symboltable_params.symboltable)==0):
             self.symboltable_params = symboltable.createChildTable()
         for param in self.params:
-            val = param.visit(self.symboltable_params)
-            nodes.append(val)
+           val = param.visit(self.symboltable_params)
+           nodes.append(val)
         symboltable.addBinding(self.identifier.token.value, self, self.type.visit(symboltable))
         return SequenceNode(Token(TokenTypes.TUPLE_TYPE,TokenTypes.TUPLE_TYPE.value),nodes)
     
@@ -910,9 +916,9 @@ class ForNode(BaseNode):
         else: results = [results]
         for result in results:
             if(result.token.type != TokenTypes.FAIL and result.token.type != TokenTypes.IDENTIFIER):
-                doContext = Contexts([copy.deepcopy(self.do)])
-                res = doContext.visit(result.usedSymbolTable)             
-                doResults.append(res)
+               doContext = Contexts([copy.deepcopy(self.do)])
+               res = doContext.visit(result.usedSymbolTable)             
+               doResults.append(res)
         if len(doResults) == 1:
             if doResults[0].token.type == TokenTypes.CHOICE:
                 resultSeq.nodes = doResults[0].nodes
@@ -977,6 +983,7 @@ class ForNode(BaseNode):
 
         resultSeq = SequenceNode(Token(TokenTypes.TUPLE_TYPE,TokenTypes.TUPLE_TYPE.value),[])
         self.usedSymbolTable = symboltable
+               
         finalResults = []
         nodeContexts = Contexts([copy.deepcopy(self.node)])
         results = nodeContexts.visit(symboltable)
@@ -985,7 +992,7 @@ class ForNode(BaseNode):
         else: results = [results]
         for result in results:
             if(result.token.type != TokenTypes.FAIL and result.token.type != TokenTypes.IDENTIFIER):           
-                finalResults.append(result)
+               finalResults.append(result)
         if len(finalResults) == 1:
             if finalResults[0].token.type == TokenTypes.CHOICE:
                 resultSeq.nodes = finalResults[0].nodes
@@ -1092,10 +1099,12 @@ class IfNode(BaseNode):
             results = results.nodes
         else: results = [results]
         if_result = results[0]
+       
         childTable = symboltable.createChildTable()
         if(if_result.token.type != TokenTypes.FAIL and if_result.token.type != TokenTypes.IDENTIFIER):
-            then_context = Contexts([copy.deepcopy(self.then_node)])
-            finalResult = then_context.visit(childTable)             
+               then_context = Contexts([copy.deepcopy(self.then_node)])
+               finalResult = then_context.visit(childTable)             
+               
         else: 
             childTable = symboltable.createChildTable()
             else_context = Contexts([copy.deepcopy(self.else_node)])
@@ -1229,6 +1238,7 @@ class RigidEqNode(BaseNode):
     def App_Beta(self,identifierFrom, identifierTo):
         self.left_node.App_Beta(identifierFrom, identifierTo)
         self.right_node.App_Beta(identifierFrom, identifierTo)
+       
 
 
 '''
@@ -1360,7 +1370,7 @@ class IndexingNode(BaseNode):
         (isValid, result) = symboltable.get_value(self.identifier.token.value)
         if isValid and result != None:
             try:
-                return result.visit(symboltable).nodes[self.index.visit(symboltable).token.value]
+               return result.visit(symboltable).nodes[self.index.visit(symboltable).token.value]
             except:
                 return FailNode(Token(TokenTypes.FAIL, TokenTypes.FAIL.value))
         return FailNode(Token(TokenTypes.FAIL, TokenTypes.FAIL.value))
@@ -1384,7 +1394,7 @@ class IndexingNode(BaseNode):
                 result = result.visit(currentContext.usedSymbolTable)
                 freshId = IdentifierNode(Token(TokenTypes.IDENTIFIER,IdentifierCreator.create(currentContext.usedSymbolTable)))
                 freshScope = ScopeNode(Token(TokenTypes.SCOPE, TokenTypes.SCOPE),[freshId],
-                                        TypeNode(Token(TokenTypes.INT_TYPE,TokenTypes.INT_TYPE.value),ValueTypes.INT_TYPE))
+                                           TypeNode(Token(TokenTypes.INT_TYPE,TokenTypes.INT_TYPE.value),ValueTypes.INT_TYPE))
                 currentContext.visit(currentContext.usedSymbolTable)
                 flexWithIndex = FlexibleEqNode(Token(TokenTypes.EQUAL,TokenTypes.EQUAL.value),freshId,self.index)
                 nodeIndex = 0
@@ -1446,7 +1456,7 @@ class ChoiceSequenceNode(BaseNode):
 
                     # Skip fail node
                     if current_n.token.type != TokenTypes.FAIL:
-                        nodes.append(current_n)  
+                         nodes.append(current_n)  
 
             # If choise sequence is empty, return false?
             if(len(nodes) == 0):
@@ -1454,8 +1464,8 @@ class ChoiceSequenceNode(BaseNode):
             
             # If choise has atleast one return the node it only contains instead od a choice sequence node.
             if(len(nodes) == 1):
-                # HIER GEÄNDERT  anstatt nodes[0].node nur nodes[0], weil es nur ein node ist und kein visitornode
-                return nodes[0]
+                  # HIER GEÄNDERT  anstatt nodes[0].node nur nodes[0], weil es nur ein node ist und kein visitornode
+                 return nodes[0]
             
             # At last, return choice sequence node wit all visited values.
             return ChoiceSequenceNode(self.token, nodes) 
@@ -1494,6 +1504,7 @@ class ChoiceSequenceNode(BaseNode):
     Return True indicating next choice branch has been selected.
     ''' 
     def nextChoice(self) -> bool:
+           
         if self.currentChoice + 1 > len(self.nodes) - 1:
             self.setChoiceBack()
             self.setValCountBack()
@@ -1566,6 +1577,8 @@ class ChoiceSequenceNode(BaseNode):
     def getContexts(self, currentContext):   
         return ContextValues(self.nodes,True, False)
 
+       
+
 class DotDotNode(BaseNode):
     def __init__(self, token:Token, start:BaseNode, end:BaseNode) -> None:
         super().__init__(token)
@@ -1601,6 +1614,7 @@ class DotDotNode(BaseNode):
                 res = NumberNode(Token(TokenTypes.INTEGER, currentInt))
                 res.usedSymbolTable = symboltable
                 nodes.append(res)
+           
         return ChoiceSequenceNode(Token(TokenTypes.CHOICE,TokenTypes.CHOICE.value), nodes)
     
     def getChildNodes(self):
@@ -1639,6 +1653,7 @@ class DotDotNode(BaseNode):
                 nodes.append(res)
         choices = ChoiceSequenceNode(Token(TokenTypes.CHOICE,TokenTypes.CHOICE.value), nodes)
         return choices.getContexts(currentContext)
+         
 
 '''
 Fail node indicating false? in Verse.
@@ -1659,6 +1674,8 @@ class FailNode(BaseNode): # Technically not need, since Fail node is 1 to 1 a Ba
         childNodes = [self]
         return childNodes
     
+   
+
 class LambdaNode(BaseNode):
     def __init__(self, token:Token, params:list[ScopeNode], body:BlockNode, values:list[BaseNode]) -> None:
         super().__init__(token)
@@ -1721,47 +1738,56 @@ class LambdaNode(BaseNode):
     
 
 
-class Contexts:
+class Contexts(BaseNode):
     def __init__(self, contexts:list) -> None:
         self.contexts = contexts
 
     def visit(self, symboltable):
         self.usedSymbolTable = symboltable
-     
+        
+        
         checkContext = True
- 
+
         while checkContext:
             newContexts = []
             while checkContext:
+                
                 for c in self.contexts:
+                    
                     context = c.getContexts(c)
+                    
                     if context.alreadyInContext or (context.needContext and context.alreadyInContext == False):
-                        newContexts.append(copy.deepcopy(c))
-                    else:
-                        newContexts.append(c)
-                checkContext = context.alreadyInContext
-        self.contexts = newContexts
-        results = []
-        newContexts = []
+                        newContexts.extend(context.nodes)
+                    else: newContexts.append(c)
 
-        for c in self.contexts:
-            usingTable = symboltable
-            if len(self.contexts) > 1:
-                usingTable = copy.deepcopy(usingTable)
-            res = c.visit(usingTable)
-            context  =  c.getContexts(c)
-            if context.alreadyInContext or (context.needContext and context.alreadyInContext == False):
-                newContexts.append(c)
-            else:
-                newContexts.append(copy.deepcopy(c))
- 
-            checkContext = context.alreadyInContext or (context.needContext and context.alreadyInContext == False)
-            try:
-                results.extend(res)
-            except:
-                results.append(res) 
-        self.contexts = newContexts  
- 
+                    checkContext = context.alreadyInContext
+
+                self.contexts = copy.deepcopy(newContexts)
+                
+                results = []
+                newContexts = []
+            
+            for c in self.contexts:
+                
+                usingTable = symboltable
+                if len(self.contexts) > 1:
+                    usingTable = copy.deepcopy(usingTable)
+
+                res = c.visit(usingTable)
+
+                context  =  c.getContexts(c)
+                
+                if context.alreadyInContext or (context.needContext and context.alreadyInContext == False):
+                        newContexts.extend(context.nodes)
+                else: newContexts.append(c)
+
+                checkContext = context.alreadyInContext or (context.needContext and context.alreadyInContext == False)
+                try:
+                    results.extend(res)
+                except:
+                    results.append(res) 
+            self.contexts = copy.deepcopy(newContexts)  
+             
         if len(results)>1:
             result = ChoiceSequenceNode(Token(TokenTypes.CHOICE,TokenTypes.CHOICE.value),results)
         else: result = results[0]
@@ -1772,8 +1798,9 @@ class Contexts:
     
     def getContexts(self, currentContext):
         for c in self.contexts:
-            context = c.getContexts(c)
-            return context
+           context = c.getContexts(c)
+           return context
+
 
 
     
