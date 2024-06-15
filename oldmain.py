@@ -4,15 +4,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from nnodes import *
+from nodes import *
 import sys
 import string
 from logger import Console_Logger
 from verse_lexer import lexicon
 from verse_parser import Parser
 from verse_interpreter import Interpreter
-import start_text
-import pickle
+
 
 
 
@@ -58,7 +57,7 @@ class VerseInterpreterApp(App):
             lexer = lexicon(input_text)
             parser = Parser(lexer)
             interpreter = Interpreter(parser)
-            result = interpreter.interpret(self)
+            result = interpreter.interpret()
             self.output.text = repr(result)
             
             

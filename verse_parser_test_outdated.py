@@ -5,7 +5,7 @@ from ddt import ddt, data, unpack
 from parsedNode import ParsedNode
 from tokens import Token
 from tokenTypes import TokenTypes
-from nnodes import *
+from nodes import *
 from verse_lexer import lexicon
 from verse_parser import Parser
 

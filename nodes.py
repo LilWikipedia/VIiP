@@ -9,10 +9,10 @@ from identifier_creator import IdentifierCreator
 
 
 class ContextValues():
-     def __init__(self, nodes, needsContext, alreadyInContext) -> None:
-         self.nodes = nodes
-         self.needContext = needsContext
-         self.alreadyInContext = alreadyInContext
+    def __init__(self, nodes, needsContext, alreadyInContext) -> None:
+        self.nodes = nodes
+        self.needContext = needsContext
+        self.alreadyInContext = alreadyInContext
 
 '''
 Top class of all nodes.
