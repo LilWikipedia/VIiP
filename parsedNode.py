@@ -1,4 +1,4 @@
-from nnodes import BaseNode
+from nodes import BaseNode
 
 #Class that takes a parsed node, containes information if node could have been parsed
 class ParsedNode:

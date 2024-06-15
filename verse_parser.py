@@ -1,6 +1,6 @@
 from verse_lexer import lexicon
 from logger import *
-from nnodes import *
+from nodes import *
 from parsedNode import *
 class Parser:
     def __init__(self, lexer: lexicon):
