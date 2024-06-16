@@ -34,12 +34,12 @@ class SymbolTable:
         else:
             return None
 
-    #def __init__(self, parent) -> None:
-    #    self.symboltable: list[Symbol] = []
-     #   self.childTables: list[SymbolTable] = []
-      #  self.parentTable: SymbolTable = parent
-       # self.logger = Console_Logger()
-        #self.printable = False
+    def __init__(self, parent) -> None:
+        self.symboltable: list[Symbol] = []
+        self.childTables: list[SymbolTable] = []
+        self.parentTable: SymbolTable = parent
+        self.logger = Console_Logger()
+        self.printable = False
         
 
     def __info__(self) -> None:
@@ -58,7 +58,7 @@ class SymbolTable:
         # checks if the name already exists in the current symbol. Otherwise add to table.
         if self.check_if_exists(symbol) == False:
             self.symboltable.append(Symbol(symbol, None, symbolType))
-            # self.logger.__log__("Added the Symbol: {} to the symboltable: {}".format(symbol, self))
+            self.logger.__log__("Added the Symbol: {} to the symboltable: {}".format(symbol, self))
             return True
         return False
 
@@ -137,11 +137,11 @@ class SymbolTable:
         # checks if the name already exists in the current symbol. Otherwise add to table.
         if self.check_if_exists(symbol) == False:
             self.symboltable.append(Symbol(symbol, value, symbolType))
-            # self.logger.__log__("Added the Symbol: {} to the symboltable: {}".format(symbol, self))
+            self.logger.__log__("Added the Symbol: {} to the symboltable: {}".format(symbol, self))
     
     def addSymbolTable(self, symboltable) -> None:
             self.childTables.append(symboltable)
-            # self.logger.__log__("Added the Symboltable: {} to the symboltable: {}".format(symboltable, symboltable))
+            self.logger.__log__("Added the Symboltable: {} to the symboltable: {}".format(symboltable, symboltable))
     
     def createChildTable(self):
         newTable = SymbolTable(self)
@@ -159,7 +159,7 @@ class SymbolTable:
             if sym.symbol == symbol.symbol:
                 if sym.insideTable == self:
                     self.symboltable.remove(symbol) 
-                    # self.logger.__log__("Removed the Symbol: {} to the scopetable".format(symbol.symbol))
+                    self.logger.__log__("Removed the Symbol: {} to the scopetable".format(symbol.symbol))
                     return True
         return False
     
@@ -241,24 +241,24 @@ class SymbolTable:
                         unifiedResult = self.unify(lNew,rNew)
                         return unifiedResult[0] 
             return False
-     
-    def unify(self,l, r) -> tuple[bool,list]:
-      unify_success = (False,"")
-      if l.token.type == TokenTypes.INTEGER and r.token.type == TokenTypes.INTEGER:
-        unify_success = self.U_LIT(l,r)
 
-      # --HIER GEÄNDERT unifikation für string
-      elif l.token.type == TokenTypes.STRING and r.token.type == TokenTypes.STRING:
-        unify_success = self.U_String(l,r)
-      elif (l.token.type == TokenTypes.TUPLE_TYPE and r.token.type == TokenTypes.TUPLE_TYPE) or (l.token.type == TokenTypes.CHOICE and r.token.type == TokenTypes.CHOICE):
-        unify_success =  self.U_TUP(l,r)
-      elif l.token.type == TokenTypes.SCOPE or r.token.type == TokenTypes.SCOPE: 
-          if l.token.type == TokenTypes.SCOPE: 
-              l = l.nodes[0]
-          if r.token.type == TokenTypes.SCOPE: 
-              r = r.nodes[0]
-          unify_success = self.unify(l,r)  
-      else: 
+    def unify(self,l, r) -> tuple[bool,list]:
+        unify_success = (False,"")
+        if l.token.type == TokenTypes.INTEGER and r.token.type == TokenTypes.INTEGER:
+            unify_success = self.U_LIT(l,r)
+
+    # --HIER GEÄNDERT unifikation für string
+            if l.token.type == TokenTypes.STRING and r.token.type == TokenTypes.STRING:
+                unify_success = self.U_String(l,r)
+            if (l.token.type == TokenTypes.TUPLE_TYPE and r.token.type == TokenTypes.TUPLE_TYPE) or (l.token.type == TokenTypes.CHOICE and r.token.type == TokenTypes.CHOICE):
+                unify_success =  self.U_TUP(l,r)
+            if l.token.type == TokenTypes.SCOPE or r.token.type == TokenTypes.SCOPE: 
+                if l.token.type == TokenTypes.SCOPE: 
+                    l = l.nodes[0]
+            if r.token.type == TokenTypes.SCOPE: 
+                r = r.nodes[0]
+            unify_success = self.unify(l,r)  
+        else: 
             noIdentfiers = True
             if l.token.type == TokenTypes.IDENTIFIER or r.token.type == TokenTypes.IDENTIFIER:
                 if l.token.type == TokenTypes.IDENTIFIER:
@@ -279,49 +279,46 @@ class SymbolTable:
                     unify_success = self.unify(l,r)
                 else: unify_success = (True, [])
                 
-            else: (False, [])
-               
-      return unify_success
+            else: (False, [])         
+        return unify_success
 
         
     # --HIER GEÄNDERT Damit die Unifikation funktioniert
     def U_String(self, k1, k2) -> tuple[bool,list]:
-      u_str = [k1,k2]
-      if k1.value != k2.value:
-        return (False, [])
-      return (True, [u_str])
+        u_str = [k1,k2]
+        if k1.value != k2.value:
+            return (False, [])
+        return (True, [u_str])
 
     def U_LIT(self, k1, k2) -> tuple[bool,list]:
-      u_str = [k1,k2]
-      if k1.value != k2.value:
-        return (False, [])
-      return (True, [u_str])
+        u_str = [k1,k2]
+        if k1.value != k2.value:
+            return (False, [])
+        return (True, [u_str])
 
     def U_TUP(self,t1, t2) -> tuple[bool,list]: 
         if len(t1.nodes) != len(t2.nodes):
-          return (False, None)
+            return (False, None)
 
         unified_vals = list(zip(t1.nodes,t2.nodes)) 
 
         unifiedVals = []
         for uv in unified_vals:
-          isUnified = self.unify(uv[0], uv[1])
-          if isUnified[0]:
+            isUnified = self.unify(uv[0], uv[1])
+        if isUnified[0]:
             unifiedVals.extend(isUnified[1])
-          else:  return (False, None)
+        else:  return (False, None)
         return (True, unifiedVals)
 
     def Var_Swap(self,id_l, id_r) -> tuple[bool,list]:
         return (True,[[id_l,id_r],[id_r,id_l]])
-      
-
     def Hnf_Swap(self,l,id_r):
         return (True,[[id_r,l]])
     
     def U_Occurs(self,symbol, val) -> bool:
         for child in val.getChildNodes():
-           if child.token.value == symbol:
-               return True
+            if child.token.value == symbol:
+                return True
         return False
     
 

@@ -11,14 +11,18 @@ from verse_lexer import lexicon
 from verse_parser import Parser
 from verse_interpreter import Interpreter
 from symboltable import SymbolTable
-from nodes import Node, VariableDeclaration, VariableReference
+from nodes import * # VariableDeclaration, VariableReference
 
 # Helper functions from the linter/error checking code
 def get_ast(source_code):
     lexer = lexicon(source_code)
     parser = Parser(lexer)
+    interpreter = Interpreter(parser)
+    result = interpreter.interpret() #
     ast = parser.parse()
+    print(repr(result)) #
     return ast
+    
 
 def analyze(ast):
     symbol_table = SymbolTable()
@@ -120,15 +124,6 @@ class VerseInterpreterApp(App):
         except Exception as e:
             self.output.text = f"Error: {str(e)}"
 
-def verse_userinput(text):
-    sys.setrecursionlimit(1000000)
-    userverse = text
-
-    lexer = lexicon(uservice)
-    parser = Parser(lexer)
-    interpreter = Interpreter(parser)
-    result = interpreter.interpret()
-    return repr(result)
 
 if __name__ == '__main__':
     VerseInterpreterApp().run()

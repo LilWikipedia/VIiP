@@ -769,7 +769,7 @@ class FuncDeclNode(BaseNode):
         return childNodes
     
     def getContexts(self, currentContext):   
-        """
+        #
         contextValues = self.body.getContexts(currentContext)
         if(contextValues.alreadyInContext == False and contextValues.needContext):
             contexts = []
@@ -778,7 +778,7 @@ class FuncDeclNode(BaseNode):
                 context = Contexts([copy.deepcopy(currentContext)])
                 contexts.append(context)
             return ContextValues(contexts,True, True)
-        """
+        #
         return ContextValues([currentContext],False, False)
     
 class PrintDecl(FuncDeclNode):
@@ -877,8 +877,8 @@ class DataDeclNode:
         if(len(self.symboltable_params.symboltable)==0):
             self.symboltable_params = symboltable.createChildTable()
         for param in self.params:
-           val = param.visit(self.symboltable_params)
-           nodes.append(val)
+            val = param.visit(self.symboltable_params)
+            nodes.append(val)
         symboltable.addBinding(self.identifier.token.value, self, self.type.visit(symboltable))
         return SequenceNode(Token(TokenTypes.TUPLE_TYPE,TokenTypes.TUPLE_TYPE.value),nodes)
     
@@ -935,9 +935,9 @@ class ForNode(BaseNode):
         else: results = [results]
         for result in results:
             if(result.token.type != TokenTypes.FAIL and result.token.type != TokenTypes.IDENTIFIER):
-               doContext = Contexts([copy.deepcopy(self.do)])
-               res = doContext.visit(result.usedSymbolTable)             
-               doResults.append(res)
+                doContext = Contexts([copy.deepcopy(self.do)])
+                res = doContext.visit(result.usedSymbolTable)             
+                doResults.append(res)
         if len(doResults) == 1:
             if doResults[0].token.type == TokenTypes.CHOICE:
                 resultSeq.nodes = doResults[0].nodes
@@ -948,9 +948,9 @@ class ForNode(BaseNode):
             resultSeq.nodes = doResults
         resContext = Contexts([resultSeq])
         results = resContext.visit(symboltable)
-        return results
+        #return results
 
-        """
+        #
         for_table = symboltable.createChildTable()
         isIndexing = False
         isBinding = False
@@ -987,7 +987,7 @@ class ForNode(BaseNode):
             return self.for_indexing(symboltable, indexingNode)
         result = self.execDo(for_table)
         return self.convert(result,for_table)
-        """
+        #
     
     def getChildNodes(self):
         childNodes = []
@@ -1001,8 +1001,7 @@ class ForNode(BaseNode):
 
 
         resultSeq = SequenceNode(Token(TokenTypes.TUPLE_TYPE,TokenTypes.TUPLE_TYPE.value),[])
-        self.usedSymbolTable = symboltable
-               
+        self.usedSymbolTable = symboltable     
         finalResults = []
         nodeContexts = Contexts([copy.deepcopy(self.node)])
         results = nodeContexts.visit(symboltable)
@@ -1011,7 +1010,7 @@ class ForNode(BaseNode):
         else: results = [results]
         for result in results:
             if(result.token.type != TokenTypes.FAIL and result.token.type != TokenTypes.IDENTIFIER):           
-               finalResults.append(result)
+                finalResults.append(result)
         if len(finalResults) == 1:
             if finalResults[0].token.type == TokenTypes.CHOICE:
                 resultSeq.nodes = finalResults[0].nodes
@@ -1022,10 +1021,13 @@ class ForNode(BaseNode):
             resultSeq.nodes = finalResults
         resContext = Contexts([resultSeq])
         results = resContext.visit(symboltable)
-        return results
+        
+        
+        
+        
     
 
-        """
+        #
         if self.check_type(result.token.type, [TokenTypes.COMMA, TokenTypes.CHOICE]):
             return SequenceNode(Token(TokenTypes.TUPLE_TYPE, TokenTypes.TUPLE_TYPE.value), result.nodes)
 
@@ -1036,7 +1038,8 @@ class ForNode(BaseNode):
         # returns empty tuple
         if self.check_type(result.token.type, [TokenTypes.FAIL]):
             return SequenceNode(Token(TokenTypes.TUPLE_TYPE, TokenTypes.TUPLE_TYPE.value), [])
-        """
+        #
+        return results
     
     def for_indexing_binding(self, symboltable: SymbolTable, indexingNode: BaseNode):
         # checks if the value contains already a value
@@ -1117,13 +1120,11 @@ class IfNode(BaseNode):
         if(results.token.type == TokenTypes.CHOICE):
             results = results.nodes
         else: results = [results]
-        if_result = results[0]
-       
+        if_result = results[0] 
         childTable = symboltable.createChildTable()
         if(if_result.token.type != TokenTypes.FAIL and if_result.token.type != TokenTypes.IDENTIFIER):
-               then_context = Contexts([copy.deepcopy(self.then_node)])
-               finalResult = then_context.visit(childTable)             
-               
+                then_context = Contexts([copy.deepcopy(self.then_node)])
+                finalResult = then_context.visit(childTable)                
         else: 
             childTable = symboltable.createChildTable()
             else_context = Contexts([copy.deepcopy(self.else_node)])
@@ -1389,7 +1390,7 @@ class IndexingNode(BaseNode):
         (isValid, result) = symboltable.get_value(self.identifier.token.value)
         if isValid and result != None:
             try:
-               return result.visit(symboltable).nodes[self.index.visit(symboltable).token.value]
+                return result.visit(symboltable).nodes[self.index.visit(symboltable).token.value]
             except:
                 return FailNode(Token(TokenTypes.FAIL, TokenTypes.FAIL.value))
         return FailNode(Token(TokenTypes.FAIL, TokenTypes.FAIL.value))
@@ -1413,7 +1414,7 @@ class IndexingNode(BaseNode):
                 result = result.visit(currentContext.usedSymbolTable)
                 freshId = IdentifierNode(Token(TokenTypes.IDENTIFIER,IdentifierCreator.create(currentContext.usedSymbolTable)))
                 freshScope = ScopeNode(Token(TokenTypes.SCOPE, TokenTypes.SCOPE),[freshId],
-                                           TypeNode(Token(TokenTypes.INT_TYPE,TokenTypes.INT_TYPE.value),ValueTypes.INT_TYPE))
+                                            TypeNode(Token(TokenTypes.INT_TYPE,TokenTypes.INT_TYPE.value),ValueTypes.INT_TYPE))
                 currentContext.visit(currentContext.usedSymbolTable)
                 flexWithIndex = FlexibleEqNode(Token(TokenTypes.EQUAL,TokenTypes.EQUAL.value),freshId,self.index)
                 nodeIndex = 0
@@ -1475,7 +1476,7 @@ class ChoiceSequenceNode(BaseNode):
 
                     # Skip fail node
                     if current_n.token.type != TokenTypes.FAIL:
-                         nodes.append(current_n)  
+                        nodes.append(current_n)  
 
             # If choise sequence is empty, return false?
             if(len(nodes) == 0):
@@ -1483,8 +1484,8 @@ class ChoiceSequenceNode(BaseNode):
             
             # If choise has atleast one return the node it only contains instead od a choice sequence node.
             if(len(nodes) == 1):
-                  # HIER GEÄNDERT  anstatt nodes[0].node nur nodes[0], weil es nur ein node ist und kein visitornode
-                 return nodes[0]
+                # HIER GEÄNDERT  anstatt nodes[0].node nur nodes[0], weil es nur ein node ist und kein visitornode
+                return nodes[0]
             
             # At last, return choice sequence node wit all visited values.
             return ChoiceSequenceNode(self.token, nodes) 
@@ -1805,8 +1806,7 @@ class Contexts(BaseNode):
                     results.extend(res)
                 except:
                     results.append(res) 
-            self.contexts = copy.deepcopy(newContexts)  
-             
+                    self.contexts = copy.deepcopy(newContexts)     
         if len(results)>1:
             result = ChoiceSequenceNode(Token(TokenTypes.CHOICE,TokenTypes.CHOICE.value),results)
         else: result = results[0]
@@ -1817,8 +1817,8 @@ class Contexts(BaseNode):
     
     def getContexts(self, currentContext):
         for c in self.contexts:
-           context = c.getContexts(c)
-           return context
+            context = c.getContexts(c)
+            return context
 
 
 
