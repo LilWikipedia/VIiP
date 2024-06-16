@@ -17,6 +17,25 @@ class ContextValues():
 '''
 Top class of all nodes.
 '''
+
+# nodes.py
+
+class Node:
+    def __init__(self, children=None):
+        self.children = children or []
+
+class VariableDeclaration(Node):
+    def __init__(self, name, type, value=None):
+        super().__init__()
+        self.name = name
+        self.type = type
+        self.value = value
+
+class VariableReference(Node):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name
+
 class BaseNode:
     def __init__(self, token) -> None:
         self.token = token 
@@ -107,7 +126,7 @@ class BlockNode(BaseNode):
     def getChildNodes(self):
         childNodes = []
         for n in self.nodes:
-           childNodes.extend(n.getChildNodes())
+            childNodes.extend(n.getChildNodes())
         return childNodes
     
     def App_Beta(self,identifierFrom, identifierTo):

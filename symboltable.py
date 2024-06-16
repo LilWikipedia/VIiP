@@ -15,13 +15,31 @@ class Symbol:
         return self.value
     
 
-class SymbolTable:    
-    def __init__(self, parent) -> None:
-        self.symboltable: list[Symbol] = []
-        self.childTables: list[SymbolTable] = []
-        self.parentTable: SymbolTable = parent
-        self.logger = Console_Logger()
-        self.printable = False
+class SymbolTable:
+    def __init__(self, parent=None):
+        self.symbols = {}
+        self.parent = parent
+
+    def declare(self, name, type):
+        if name in self.symbols:
+            return False  # Already declared in this scope
+        self.symbols[name] = type
+        return True
+
+    def lookup(self, name):
+        if name in self.symbols:
+            return self.symbols[name]
+        elif self.parent:
+            return self.parent.lookup(name)
+        else:
+            return None
+
+    #def __init__(self, parent) -> None:
+    #    self.symboltable: list[Symbol] = []
+     #   self.childTables: list[SymbolTable] = []
+      #  self.parentTable: SymbolTable = parent
+       # self.logger = Console_Logger()
+        #self.printable = False
         
 
     def __info__(self) -> None:
@@ -45,37 +63,37 @@ class SymbolTable:
         return False
 
     
-    # def addValue(self, symbol: string, value) -> bool:
+    def addValue(self, symbol: string, value) -> bool:
     #     # Had to set a max iteration count, due to the infinite adding of new symbols during iteration of symbol table while unification especially for the IfNode
-    #     i = 0
-    #     isAdded = False
-    #     maxIterations = len(self.symboltable)
-    #     while i < maxIterations:
-    #         sym = self.symboltable[i]
-    #         if sym.symbol == symbol:
-    #             if sym.value == None and value != None and sym.value != sym.symbol:
-    #                 occurs = self.U_Occurs(symbol,value)
-    #                 if occurs:
-    #                     sym.isUnified = False
-    #                 else: sym.value = value
-    #                 # self.logger.__log__("Added the value: {} to the existing symbol: {} in the symboltable: {}".format(value, sym.symbol, self))
-    #                 isAdded = True
-    #                 # return True
-    #             elif sym.value != None and value != None and sym.value != sym.symbol:
-    #                 occurs = self.U_Occurs(symbol,value)
-    #                 if occurs:
-    #                     sym.isUnified = False
-    #                 else: 
-    #                     isUnified = self.tryUnify(sym.value, value)
-    #                     if isUnified == False:
-    #                         sym.isUnified = isUnified
-    #                     sym.value = value
-    #                     isAdded = True
-    #         i += 1  
+        i = 0
+        isAdded = False
+        maxIterations = len(self.symboltable)
+        while i < maxIterations:
+            sym = self.symboltable[i]
+            if sym.symbol == symbol:
+                if sym.value == None and value != None and sym.value != sym.symbol:
+                    occurs = self.U_Occurs(symbol,value)
+                    if occurs:
+                        sym.isUnified = False
+                    else: sym.value = value
+                    self.logger.__log__("Added the value: {} to the existing symbol: {} in the symboltable: {}".format(value, sym.symbol, self))
+                    isAdded = True
+                    return True
+                elif sym.value != None and value != None and sym.value != sym.symbol:
+                    occurs = self.U_Occurs(symbol,value)
+                    if occurs:
+                        sym.isUnified = False
+                    else: 
+                        isUnified = self.tryUnify(sym.value, value)
+                        if isUnified == False:
+                            sym.isUnified = isUnified
+                        sym.value = value
+                        isAdded = True
+            i += 1  
         
-    #     if isAdded == False and self.parentTable != None:
-    #         return self.parentTable.addValue(symbol, value)
-    #     return isAdded
+        if isAdded == False and self.parentTable != None:
+            return self.parentTable.addValue(symbol, value)
+        return isAdded
     
     def addValue(self, symbol: string, value) -> bool:
         # Had to set a max iteration count, due to the infinite adding of new symbols during iteration of symbol table while unification especially for the IfNode   
@@ -99,7 +117,7 @@ class SymbolTable:
                         else:
                             sym.value = value
                             isAdded = True
-                    # return True
+                    return True
                 elif sym.value != None and value != None and sym.value != sym.symbol:
                     occurs = self.U_Occurs(symbol,value)
                     if occurs:

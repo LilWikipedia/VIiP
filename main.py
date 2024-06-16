@@ -3,40 +3,37 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from nodes import *
 import sys
-import string
+import llvmlite.ir as ir
+import llvmlite.binding as llvm
 from logger import Console_Logger
-from verse_lexer import lexicon, Lexer
+from verse_lexer import lexicon
 from verse_parser import Parser
 from verse_interpreter import Interpreter
 from symboltable import SymbolTable
-from nodes import *
-import llvmlite.ir as ir
-import llvmlite.binding as llvm
-
+from nodes import Node, VariableDeclaration, VariableReference
 
 # Helper functions from the linter/error checking code
 def get_ast(source_code):
-    lexer = Lexer(source_code)
-    tokens = lexer.tokenize()
-    parser = Parser(tokens)
-    return parser.parse()
+    lexer = lexicon(source_code)
+    parser = Parser(lexer)
+    ast = parser.parse()
+    return ast
 
 def analyze(ast):
     symbol_table = SymbolTable()
     errors = []
-    
+
     def visit(node):
         if isinstance(node, VariableDeclaration):
-            if symbol_table.declare(node.name, node.type):
+            if not symbol_table.declare(node.name, node.type):
                 errors.append(f"Variable '{node.name}' redeclared.")
         elif isinstance(node, VariableReference):
             if not symbol_table.lookup(node.name):
                 errors.append(f"Variable '{node.name}' not declared.")
         for child in node.children:
             visit(child)
-    
+
     visit(ast)
     return errors
 
@@ -45,17 +42,17 @@ def generate_ir(ast):
     function = ir.Function(module, ir.FunctionType(ir.VoidType(), []), name="main")
     block = function.append_basic_block(name="entry")
     builder = ir.IRBuilder(block)
-    
+
     def visit(node):
         if isinstance(node, VariableDeclaration):
             var = builder.alloca(ir.IntType(32), name=node.name)
             builder.store(ir.Constant(ir.IntType(32), node.value), var)
         elif isinstance(node, VariableReference):
-            var = builder.load(node.name)
+            var = builder.load(builder.alloca(ir.IntType(32), name=node.name))
             builder.ret(var)
         for child in node.children:
             visit(child)
-    
+
     visit(ast)
     builder.ret_void()
     return module
@@ -64,14 +61,13 @@ def compile_ir(module):
     llvm_ir = str(module)
     llvm_module = llvm.parse_assembly(llvm_ir)
     llvm_module.verify()
-    
+
     target = llvm.Target.from_default_triple()
     target_machine = target.create_target_machine()
     with llvm.create_mcjit_compiler(llvm_module, target_machine) as ee:
         ee.finalize_object()
         ee.run_static_constructors()
         ee.run_function(llvm_module.get_function('main'), [])
-
 
 # Main Kivy Application
 class VerseInterpreterApp(App):
@@ -128,7 +124,7 @@ def verse_userinput(text):
     sys.setrecursionlimit(1000000)
     userverse = text
 
-    lexer = lexicon(userverse)
+    lexer = lexicon(uservice)
     parser = Parser(lexer)
     interpreter = Interpreter(parser)
     result = interpreter.interpret()
