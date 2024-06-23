@@ -1,9 +1,5 @@
 # VIiP_Kivy_Mobile_Framework
-***
- Verse sandbox independent of UEFN
 
-* Interpreter by Kariyampalli Christy & Turobin-Ort Marcel
-* Frontend & GUI by Cruz Wootten aka Lil Wikipedia
     {'input': 'for{3|4}', 'expected': '(3,4)'},
     {'input': 'for{false?}', 'expected': '()'},
     {'input': 'for(x:=10|20; x>10; y:=1|2|3; y<3)do(x+y)', 'expected': '(21,22)'}, # <- filtering variables
